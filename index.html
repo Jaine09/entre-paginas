@@ -84,7 +84,7 @@ const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"
 /* ---------- Camada de dados: Supabase (REST), com fallback local ---------- */
 let clubs=[],interests=[];
 const SB=(window.SUPABASE_URL||"").replace(/\/$/,""),KEY=window.SUPABASE_ANON_KEY||"",ONLINE=!!(SB&&KEY);
-const H={apikey:KEY,Authorization:"Bearer "+KEY,"Content-Type":"application/json"};
+const H={apikey:KEY,"Content-Type":"application/json"};if(KEY.startsWith("eyJ"))H.Authorization="Bearer "+KEY; // chaves antigas (JWT) usam Authorization; as novas "sb_publishable_" não
 const LS={get(k){try{return JSON.parse(localStorage.getItem(k)||"[]")}catch(e){return[]}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
 async function load(){
