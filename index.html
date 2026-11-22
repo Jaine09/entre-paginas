@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Entre Páginas — Clubes de Leitura</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#b5532f">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Entre Páginas">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<style>
+:root{--bg:#fbf7f1;--card:#fff;--ink:#2a2420;--mut:#7a6d62;--acc:#b5532f;--acc2:#f3e3d8;--line:#e8dccf;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1b1713;--card:#251f1a;--ink:#f1e9e0;--mut:#a69889;--acc:#e08a63;--acc2:#3a2a20;--line:#3a3129;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#1b1713;--card:#251f1a;--ink:#f1e9e0;--mut:#a69889;--acc:#e08a63;--acc2:#3a2a20;--line:#3a3129;color-scheme:dark}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Georgia,'Times New Roman',serif}
+.w{max-width:860px;margin:0 auto;padding:20px 16px 60px}
+header{text-align:center;padding:18px 0 8px}
+h1{font-size:2rem;margin:0}h1 span{color:var(--acc)}
+.sub{color:var(--mut);margin:.3rem 0 0}
+nav{display:flex;gap:6px;margin:18px 0;border-bottom:1px solid var(--line);overflow-x:auto}
+nav a{padding:10px 14px;text-decoration:none;color:var(--mut);font-family:system-ui,sans-serif;font-size:.95rem;border-bottom:3px solid transparent;white-space:nowrap}
+nav a.on{color:var(--acc);border-color:var(--acc);font-weight:600}
+.v{display:none}.v.on{display:block}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin:12px 0}
+.card h3{margin:0 0 4px}.tag{display:inline-block;background:var(--acc2);color:var(--acc);font:600 .75rem system-ui,sans-serif;padding:2px 9px;border-radius:99px;margin:0 6px 6px 0}
+.mut{color:var(--mut);font-size:.92rem}
+label{display:block;font:600 .85rem system-ui,sans-serif;margin:12px 0 4px}
+input,select,textarea{width:100%;padding:10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:inherit}
+textarea{min-height:80px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:560px){.row{grid-template-columns:1fr}}
+button{background:var(--acc);color:#fff;border:0;border-radius:8px;padding:10px 18px;font:600 .95rem system-ui,sans-serif;cursor:pointer;margin:12px 8px 0 0}
+button.g{background:var(--acc2);color:var(--acc)}button.s{padding:6px 12px;margin:8px 8px 0 0;font-size:.85rem}
+.bar{display:flex;gap:10px;flex-wrap:wrap}.bar input,.bar select{flex:1;min-width:140px}
+.blk{border-left:4px solid var(--acc);padding:4px 0 4px 14px;margin:16px 0}
+.blk h4{margin:0;font-family:system-ui,sans-serif}.blk ol{margin:6px 0;padding-left:20px}
+.msg{padding:10px;border-radius:8px;background:var(--acc2);color:var(--acc);margin-top:12px;font-family:system-ui,sans-serif}
+.note{font:.8rem system-ui,sans-serif;color:var(--mut);margin-top:30px;text-align:center}
+</style>
+</head>
+<body>
+<div class="w">
+<header><h1>📚 Entre <span>Páginas</span></h1><p class="sub">Divulgue seu clube de leitura, encontre um para participar e monte roteiros de debate — grátis.</p></header>
+<nav id="nav"><a href="#clubes">Clubes</a><a href="#cadastrar">Cadastrar clube</a><a href="#roteiro">Gerador de roteiro</a></nav>
+
+<section class="v" id="v-clubes">
+ <div class="bar"><input id="q" placeholder="Buscar por nome, cidade ou gênero…"><select id="fm"><option value="">Todos os formatos</option><option>Presencial</option><option>Online</option><option>Híbrido</option></select></div>
+ <div id="list"></div>
+</section>
+
+<section class="v" id="v-cadastrar">
+ <div class="card"><h3>Registre seu clube</h3><p class="mut">Ele aparecerá na lista de clubes para que leitores demonstrem interesse. O contato informado é público.</p>
+ <label>Nome do clube *</label><input id="c-nome" maxlength="80">
+ <div class="row"><div><label>Cidade / UF</label><input id="c-cid" maxlength="60" placeholder="São Paulo/SP"></div>
+ <div><label>Formato *</label><select id="c-fmt"><option>Presencial</option><option>Online</option><option>Híbrido</option></select></div></div>
+ <div class="row"><div><label>Gênero principal</label><select id="c-gen"></select></div>
+ <div><label>Frequência</label><select id="c-frq"><option>Semanal</option><option>Quinzenal</option><option selected>Mensal</option></select></div></div>
+ <label>Descrição *</label><textarea id="c-desc" maxlength="400"></textarea>
+ <label>Contato (e-mail, Instagram, WhatsApp) *</label><input id="c-cont" maxlength="100">
+ <button id="c-ok">Publicar clube</button><div id="c-msg"></div></div>
+</section>
+
+<section class="v" id="v-roteiro">
+ <div class="card"><h3>Gerador de roteiro de debate</h3>
+ <div class="row"><div><label>Título do livro *</label><input id="r-liv" placeholder="Ex.: Dom Casmurro"></div>
+ <div><label>Autor(a)</label><input id="r-aut"></div></div>
+ <div class="row"><div><label>Gênero</label><select id="r-gen"></select></div>
+ <div><label>Duração do encontro</label><select id="r-dur"><option value="45">45 min</option><option value="60" selected>60 min</option><option value="90">90 min</option><option value="120">2 horas</option></select></div></div>
+ <button id="r-ok">Gerar roteiro</button></div>
+ <div id="r-out"></div>
+</section>
+<p class="note">Entre Páginas · projeto open source e gratuito</p>
+</div>
+
+<script src="config.js"></script>
+<script>
+const GEN=["Romance","Ficção científica","Fantasia","Clássicos","Suspense/Policial","Não ficção","Poesia","Literatura brasileira","Infantojuvenil","Variados"];
+for(const id of["c-gen","r-gen"])document.getElementById(id).innerHTML=GEN.map(g=>`<option>${g}</option>`).join("");
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+/* ---------- Camada de dados: Supabase (REST), com fallback local ---------- */
+let clubs=[],interests=[];
+const SB=(window.SUPABASE_URL||"").replace(/\/$/,""),KEY=window.SUPABASE_ANON_KEY||"",ONLINE=!!(SB&&KEY);
+const H={apikey:KEY,Authorization:"Bearer "+KEY,"Content-Type":"application/json"};
+const LS={get(k){try{return JSON.parse(localStorage.getItem(k)||"[]")}catch(e){return[]}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+async function load(){
+  if(!ONLINE){clubs=LS.get("clubs");interests=LS.get("interests");render();return}
+  try{
+    const [c,i]=await Promise.all([fetch(SB+"/rest/v1/clubs?select=*&order=created_at.desc",{headers:H}),fetch(SB+"/rest/v1/interests?select=*",{headers:H})]);
+    if(!c.ok||!i.ok)throw new Error("HTTP "+c.status+"/"+i.status);
+    clubs=(await c.json()).map(x=>({...x,desc:x.descricao,criado:Date.parse(x.created_at)}));
+    interests=(await i.json()).map(x=>({...x,clubId:x.club_id}));
+    render();
+  }catch(e){console.error(e);$("list").innerHTML='<div class="card mut">Não foi possível carregar os clubes agora. Verifique a conexão.</div>'}
+}
+async function save(col,obj){
+  if(!ONLINE){const arr=col==="clubs"?clubs:interests;arr.push(obj);LS.set(col,arr);render();return}
+  const body=col==="clubs"
+   ?{nome:obj.nome,cidade:obj.cidade,formato:obj.formato,genero:obj.genero,freq:obj.freq,descricao:obj.desc,contato:obj.contato}
+   :{club_id:obj.clubId,nome:obj.nome,msg:obj.msg};
+  const r=await fetch(SB+"/rest/v1/"+col,{method:"POST",headers:{...H,Prefer:"return=minimal"},body:JSON.stringify(body)});
+  if(!r.ok){alert("Não foi possível salvar. Tente novamente.");return}
+  await load();
+}
+function init(){load();if(ONLINE)setInterval(load,30000)}
+
+/* ---------- Clubes ---------- */
+function render(){
+  const q=$("q").value.toLowerCase(),f=$("fm").value;
+  const rows=clubs.filter(c=>(!f||c.formato===f)&&(!q||[c.nome,c.cidade,c.genero,c.desc].join(" ").toLowerCase().includes(q)))
+   .sort((a,b)=>(b.criado||0)-(a.criado||0));
+  $("list").innerHTML=rows.length?rows.map(c=>{
+    const ints=interests.filter(i=>i.clubId===c.id);
+    return `<div class="card"><h3>${esc(c.nome)}</h3>
+    <span class="tag">${esc(c.formato)}</span><span class="tag">${esc(c.genero)}</span><span class="tag">${esc(c.freq)}</span>${c.cidade?`<span class="tag">📍 ${esc(c.cidade)}</span>`:""}
+    <p>${esc(c.desc)}</p><p class="mut">Contato: ${esc(c.contato)}</p>
+    <p class="mut">${ints.length} ${ints.length===1?"pessoa interessada":"pessoas interessadas"}${ints.length?": "+ints.slice(0,5).map(i=>esc(i.nome)).join(", "):""}</p>
+    <button class="s" onclick="openInt('${c.id}')">Tenho interesse</button><div id="i-${c.id}"></div></div>`}).join("")
+   :`<div class="card mut">Nenhum clube encontrado. Que tal <a href="#cadastrar" style="color:var(--acc)">cadastrar o primeiro</a>?</div>`;
+}
+$("q").oninput=render;$("fm").onchange=render;
+window.openInt=id=>{
+  $("i-"+id).innerHTML=`<label>Seu nome</label><input id="in-${id}" maxlength="40"><label>Mensagem (opcional; não coloque dados privados)</label><input id="im-${id}" maxlength="140">
+  <button class="s" onclick="sendInt('${id}')">Enviar interesse</button>`;
+};
+window.sendInt=async id=>{
+  const nome=$("in-"+id).value.trim();if(!nome)return;
+  await save("interests",{id:uid(),clubId:id,nome,msg:$("im-"+id).value.trim(),criado:Date.now()});
+  $("i-"+id).innerHTML=`<div class="msg">Interesse registrado! Entre em contato com o clube pelos dados acima.</div>`;
+};
+$("c-ok").onclick=async()=>{
+  const g=id=>$(id).value.trim(),nome=g("c-nome"),desc=g("c-desc"),contato=g("c-cont");
+  if(!nome||!desc||!contato){$("c-msg").innerHTML='<div class="msg">Preencha nome, descrição e contato.</div>';return}
+  await save("clubs",{id:uid(),nome,cidade:g("c-cid"),formato:g("c-fmt"),genero:g("c-gen"),freq:g("c-frq"),desc,contato,criado:Date.now()});
+  for(const i of["c-nome","c-cid","c-desc","c-cont"])$(i).value="";
+  $("c-msg").innerHTML='<div class="msg">Clube publicado! ✔</div>';setTimeout(()=>location.hash="clubes",900);
+};
+
+/* ---------- Gerador de roteiro ---------- */
+const GERAL=[
+ "Qual foi sua primeira impressão de {L} e ela mudou ao longo da leitura?",
+ "Qual personagem ou ideia mais marcou você? Por quê?",
+ "Qual trecho você levaria para uma ilha deserta? Leia ou resuma para o grupo.",
+ "O final foi o que você esperava? Mudaria algo?",
+ "Que sentimentos {L} despertou em você e em que momento?",
+ "O que {A} parece querer dizer com esta obra?",
+ "Você recomendaria {L} a um amigo? Para quem e com qual aviso?"];
+const POR={
+"Romance":["Os conflitos amorosos do livro seriam vividos da mesma forma hoje?","O casal principal é um bom exemplo de relação saudável? Debata.","Quem você acha que 'merecia' mais no desfecho?"],
+"Ficção científica":["Qual tecnologia ou conceito do livro já existe ou está próximo da realidade?","A sociedade retratada é utopia, distopia ou os dois?","Que alerta {L} faz sobre o nosso presente?"],
+"Fantasia":["O sistema de mundo/magia é coerente? Algo quebrou sua imersão?","Qual criatura, reino ou regra você gostaria de conhecer?","Que valores reais se escondem sob o enredo fantástico?"],
+"Clássicos":["Por que {L} segue sendo lido? O que envelheceu bem e mal?","Como o contexto histórico da obra influencia os personagens?","Se fosse escrito hoje, o que seria diferente?"],
+"Suspense/Policial":["Em que momento você desconfiou do desfecho? Quais pistas foram justas?","A solução foi satisfatória ou forçada?","O vilão tem alguma lógica compreensível? Isso o torna mais assustador?"],
+"Não ficção":["Qual argumento central de {L} você achou mais convincente? E o mais frágil?","Que ideia você aplicaria na sua vida esta semana?","Você discorda de algo? Que evidências contrapõem?"],
+"Poesia":["Qual poema ou verso mais ressoou? Leia em voz alta.","Como a forma (ritmo, rima, silêncios) reforça o sentido?","Que imagem ficou na sua cabeça depois da leitura?"],
+"Literatura brasileira":["Que retrato do Brasil {L} oferece e ele ainda se reconhece hoje?","Como linguagem e regionalismos moldam a narrativa?","Que questões sociais atravessam a obra?"],
+"Infantojuvenil":["Que lições do livro funcionam também para adultos?","Como seria lê-lo na idade do público-alvo?","Qual personagem você gostaria de ter como amigo?"],
+"Variados":["O que {L} te fez pensar sobre o que você costuma ler?","Qual outro livro dialoga com este?","Que nota daria e qual critério pesou mais?"]};
+const POLEM=[
+ ["O(a) protagonista de {L} agiu de forma justificável.","As ações do(a) protagonista são injustificáveis."],
+ ["{L} é uma obra ainda necessária hoje.","{L} é uma obra superestimada ou datada."],
+ ["O final de {L} foi o único possível.","O final de {L} traiu a história."],
+ ["O livro é melhor que sua versão em filme/série (ou seria).","Uma adaptação poderia superar o livro."]];
+const rnd=a=>a[Math.floor(Math.random()*a.length)];
+function pick(a,n){return [...a].sort(()=>Math.random()-.5).slice(0,n)}
+function build(){
+  const L=$("r-liv").value.trim();if(!L){$("r-out").innerHTML='<div class="msg">Informe o título do livro.</div>';return}
+  const A=$("r-aut").value.trim()||"o(a) autor(a)",g=$("r-gen").value,d=+$("r-dur").value;
+  const f=s=>s.replaceAll("{L}",L).replaceAll("{A}",A);
+  const t={abre:Math.round(d*.1),ctx:Math.round(d*.15),deb:Math.round(d*.25),gen:Math.round(d*.25),fecha:Math.round(d*.1)};
+  t.polem=d-t.abre-t.ctx-t.deb-t.gen-t.fecha;
+  const nG=d>=90?4:3,pol=rnd(POLEM);
+  const B=[
+   ["🤝 Boas-vindas e quebra-gelo",t.abre,["Cada pessoa diz em uma frase: “Ao ler "+L+", eu me senti…”","Combine as regras: escuta sem interrupção, respeito às opiniões e aviso de spoilers."]],
+   ["📖 Contexto da obra",t.ctx,[`Apresentem ${A} e o contexto em que ${L} foi escrito.`,"Quem não terminou a leitura? Até onde chegou?"]],
+   ["💬 Perguntas gerais",t.deb,pick(GERAL,nG).map(f)],
+   [`🎯 Perguntas sobre ${g}`,t.gen,(POR[g]||POR.Variados).map(f)],
+   ["⚔️ Debate: dois lados",t.polem,[`Lado A: ${f(pol[0])}`,`Lado B: ${f(pol[1])}`,"Divida o grupo, deem 3 min para preparar argumentos, depois 2 min por lado e troquem de lado para a réplica."]],
+   ["🏁 Fechamento",t.fecha,["Nota de 0 a 5 e uma palavra que resume o livro.","Votem na próxima leitura e definam data e local do próximo encontro."]]];
+  window._txt=`ROTEIRO DE DEBATE — ${L} (${A})\nGênero: ${g} · ${d} min\n\n`+B.map(b=>`${b[0]} (${b[1]} min)\n`+b[2].map((x,i)=>`  ${i+1}. ${x}`).join("\n")).join("\n\n");
+  $("r-out").innerHTML=`<div class="card"><h3>Roteiro: ${esc(L)}</h3><p class="mut">${esc(g)} · ${d} minutos</p>`+
+   B.map(b=>`<div class="blk"><h4>${b[0]} <span class="mut">— ${b[1]} min</span></h4><ol>${b[2].map(x=>`<li>${esc(x)}</li>`).join("")}</ol></div>`).join("")+
+   `<button class="g" onclick="build()">🔀 Gerar outro</button><button onclick="cp()">Copiar roteiro</button><div id="cpm"></div></div>`;
+}
+window.build=build;$("r-ok").onclick=build;
+window.cp=async()=>{try{await navigator.clipboard.writeText(window._txt);$("cpm").innerHTML='<div class="msg">Copiado!</div>'}catch(e){$("cpm").innerHTML='<div class="msg">Não foi possível copiar automaticamente; selecione o texto manualmente.</div>'}};
+
+/* ---------- Navegação por hash ---------- */
+function route(){
+  const h=["clubes","cadastrar","roteiro"].includes(location.hash.slice(1))?location.hash.slice(1):"clubes";
+  document.querySelectorAll(".v").forEach(v=>v.classList.toggle("on",v.id==="v-"+h));
+  document.querySelectorAll("#nav a").forEach(a=>a.classList.toggle("on",a.getAttribute("href")==="#"+h));
+}
+addEventListener("hashchange",route);route();init();
+if("serviceWorker" in navigator && location.protocol.startsWith("http"))addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
+</script>
+</body>
+</html>
