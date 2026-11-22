@@ -1,4 +1,2 @@
-// Preencha com os dados do seu projeto: Supabase > Project Settings > API
-// Use SOMENTE a chave "anon / public". Nunca use a service_role aqui.
-window.SUPABASE_URL = "";      // ex.: https://abcdxyz.supabase.co
-window.SUPABASE_ANON_KEY = ""; // chave anon public
+window.SUPABASE_URL = "https://bxrnpbplwehwdjovdjlk.supabase.co/rest/v1/";     
+window.SUPABASE_ANON_KEY = "sb_publishable_s8hIhRy-8Hmxa9SU8kADyQ_Ku7FzHNR";
